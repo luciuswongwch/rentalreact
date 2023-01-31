@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function HeaderComponent() {
     return (
         <>
@@ -31,7 +33,7 @@ function HeaderComponent() {
                     <div className="wrapper">
                         <div className="d-grid nav-mobile-block header-align">
                             <div className="logo">
-                                <a className="brand-logo" href="index.html"><span>Tenant</span></a>
+                                <Link className="brand-logo" to="/"><span>Tenant</span></Link>
                             </div>
                             <input type="checkbox" id="nav" />
                             <label className="nav" htmlFor="nav"></label>
@@ -39,16 +41,15 @@ function HeaderComponent() {
                                 <label htmlFor="drop" className="toggle">Menu</label>
                                 <input type="checkbox" id="drop" />
                                     <ul className="menu">
-                                        <li><a href="index.html">Home</a></li>
-                                        <li><a href="about.html">About</a></li>
-                                        <li><a href="services.html">Services</a></li>
+                                        <li><Link to="/">Home</Link></li>
+                                        <li><Link to="/about">About</Link></li>
+                                        <li><Link to="/services">Services</Link></li>
                                         <li>
                                             <label htmlFor="drop-4" className="toggle toogle-4">Blog <span className="angle-dropdown"
                                                 aria-hidden="true"></span>
                                             </label>
                                             <a href="#blog">Blog <span className="angle-dropdown" aria-hidden="true"></span></a>
                                             <input type="checkbox" id="drop-4" />
-
                                                 <ul>
                                                     <li><a href="blog.html" className="drop-text">Blog</a></li>
                                                     <li><a href="blog-single.html" className="drop-text">Blog details</a></li>
@@ -60,7 +61,6 @@ function HeaderComponent() {
                                             </label>
                                             <a href="#shop">Rental properties<span className="angle-dropdown" aria-hidden="true"></span></a>
                                             <input type="checkbox" id="drop-5" />
-
                                                 <ul>
                                                     <li><a href="properties-single.html" className="drop-text">All properties</a></li>
                                                     <li><a href="team-single.html" className="drop-text">Apartments</a></li>
@@ -69,7 +69,7 @@ function HeaderComponent() {
                                                     <li><a href="blog-single.html" className="drop-text">Townhouse</a></li>
                                                 </ul>
                                         </li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><Link to="/contact">Contact</Link></li>
                                     </ul>
                             </nav>
                         </div>

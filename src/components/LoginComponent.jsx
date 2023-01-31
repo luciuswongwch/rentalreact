@@ -1,11 +1,31 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../security/AuthContext';
+
 export default function LoginComponent() {
+    const authContext = useAuth();
+    const navigate = useNavigate();
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const [loginFailed, setLoginFailed] = useState(false);
+
+    async function handleSubmit() {
+        if (await authContext.login(username, password)) {
+            navigate(`/welcome/${username}`);
+        } else {
+            setLoginFailed(true);
+        }
+    }
+
     return (
         <>
             <section className="w3l-form-2">
                 <div className="">
                     <div className="header">
-                        <a href="index.html" className="brand-logo">Tenant</a>
-                        <a href="signup.html" className="signin">Register</a>
+                        <Link to="/" className="brand-logo">Tenant</Link>
+                        <Link to="/register" className="signin">Register</Link>
                     </div>
                     <div className="wrapper">
                         <div className="text-main">
@@ -20,12 +40,13 @@ export default function LoginComponent() {
                                 </div>
                             </div>
                             <div className="main2">
+                                {loginFailed && <div className="alert alert-warning">Login attempt failed. Please make sure you have used the correct credentials.</div>}
                                 <div className="sign-main">
                                     <p className="signup">Login to your account</p>
-                                    <p className="create">Welcome back! login to your account</p>
-                                    <form action="#" className="sign-up-form">
-                                        <input type="email" className="form-type" placeholder="Your email" required />
-                                        <input type="password" className="form-type" placeholder="Your password" required />
+                                    <p className="create">Welcome back! Login to your account</p>
+                                    <form className="sign-up-form">
+                                        <input type="username" className="form-type" placeholder="Your username" required onChange={(event) => setUsername(event.target.value)} />
+                                        <input type="password" className="form-type" placeholder="Your password" required onChange={(event) => setPassword(event.target.value)} />
                                         <div>
                                             <label className="check-remember container">
                                                 <input type="checkbox" className="form-check" />
@@ -34,8 +55,8 @@ export default function LoginComponent() {
                                             </label>
                                             <div className="clear"></div>
                                         </div>
-                                        <button className="create-account">Login account</button>
-                                        <p className="account text-center">Don't have an account? Go to <a href="register.html" className="register">Register</a> </p>
+                                        <button className="create-account" onSubmit={handleSubmit}>Login account</button>
+                                        <p className="account text-center">Don't have an account? Go to <Link to="/register" className="register">Register</Link> </p>
                                     </form>
                                 </div>
                             </div>

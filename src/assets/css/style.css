@@ -5260,7 +5260,8 @@ h3.heading-title {
 .w3l-products-4 #tab1:checked~#content1,
 .w3l-products-4 #tab2:checked~#content2,
 .w3l-products-4 #tab3:checked~#content3,
-.w3l-products-4 #tab4:checked~#content4 {
+.w3l-products-4 #tab4:checked~#content4,
+.w3l-products-4 #tab5:checked~#content5 {
     display: block;
 }
 
