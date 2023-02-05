@@ -44,17 +44,7 @@ function HeaderComponent() {
                                         <li><Link to="/">Home</Link></li>
                                         <li><Link to="/about">About</Link></li>
                                         <li><Link to="/services">Services</Link></li>
-                                        <li>
-                                            <label htmlFor="drop-4" className="toggle toogle-4">Blog <span className="angle-dropdown"
-                                                aria-hidden="true"></span>
-                                            </label>
-                                            <a href="#blog">Blog <span className="angle-dropdown" aria-hidden="true"></span></a>
-                                            <input type="checkbox" id="drop-4" />
-                                                <ul>
-                                                    <li><a href="blog.html" className="drop-text">Blog</a></li>
-                                                    <li><a href="blog-single.html" className="drop-text">Blog details</a></li>
-                                                </ul>
-                                        </li>
+                                        <li><Link to="/pricing">Pricing</Link></li>
                                         <li>
                                             <label htmlFor="drop-5" className="toggle toogle-5">Rental properties <span className="angle-dropdown"
                                                 aria-hidden="true"></span>
@@ -62,11 +52,12 @@ function HeaderComponent() {
                                             <a href="#shop">Rental properties<span className="angle-dropdown" aria-hidden="true"></span></a>
                                             <input type="checkbox" id="drop-5" />
                                                 <ul>
-                                                    <li><a href="properties-single.html" className="drop-text">All properties</a></li>
-                                                    <li><a href="team-single.html" className="drop-text">Apartments</a></li>
-                                                    <li><a href="team-single.html" className="drop-text">Condos</a></li>
-                                                    <li><a href="blog-single.html" className="drop-text">Houses</a></li>
-                                                    <li><a href="blog-single.html" className="drop-text">Townhouse</a></li>
+                                                    <li><Link to="/properties" className="drop-text">All properties</Link></li>
+                                                    <li><Link to="/properties?type=apartment" className="drop-text">Apartments</Link></li>
+                                                    <li><Link to="/properties?type=condo" className="drop-text">Condos</Link></li>
+                                                    <li><Link to="/properties?type=house" className="drop-text">Houses</Link></li>
+                                                    <li><Link to="/properties?type=townhouse" className="drop-text">Townhouses</Link></li>
+                                                    <li><Link to="/properties?type=villa" className="drop-text">Villas</Link></li>
                                                 </ul>
                                         </li>
                                         <li><Link to="/contact">Contact</Link></li>

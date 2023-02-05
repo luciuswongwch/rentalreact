@@ -1,9 +1,0 @@
-import { apiClient } from "./ApiClient";
-
-export function basicAuthentication(token) {
-    apiClient.get(`/basicauth`, {
-        headers: {
-            Authorization: token
-        }
-    })
-}

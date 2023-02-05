@@ -13,7 +13,7 @@ export default function LoginComponent() {
 
     async function handleSubmit() {
         if (await authContext.login(username, password)) {
-            navigate(`/welcome/${username}`);
+            navigate("/");
         } else {
             setLoginFailed(true);
         }
@@ -40,13 +40,13 @@ export default function LoginComponent() {
                                 </div>
                             </div>
                             <div className="main2">
-                                {loginFailed && <div className="alert alert-warning">Login attempt failed. Please make sure you have used the correct credentials.</div>}
+                                {loginFailed && <div style={{color: "red"}}>Login attempt failed. Please make sure you have used the correct credentials.</div>}
                                 <div className="sign-main">
                                     <p className="signup">Login to your account</p>
                                     <p className="create">Welcome back! Login to your account</p>
-                                    <form className="sign-up-form">
-                                        <input type="username" className="form-type" placeholder="Your username" required onChange={(event) => setUsername(event.target.value)} />
-                                        <input type="password" className="form-type" placeholder="Your password" required onChange={(event) => setPassword(event.target.value)} />
+                                    <div className="sign-up-form">
+                                        <input type="username" className="form-type" placeholder="Your username" required onChange={(event) => {setUsername(event.target.value)}} />
+                                        <input type="password" className="form-type" placeholder="Your password" required onChange={(event) => {setPassword(event.target.value)}} />
                                         <div>
                                             <label className="check-remember container">
                                                 <input type="checkbox" className="form-check" />
@@ -55,9 +55,9 @@ export default function LoginComponent() {
                                             </label>
                                             <div className="clear"></div>
                                         </div>
-                                        <button className="create-account" onSubmit={handleSubmit}>Login account</button>
+                                        <button className="create-account" onClick={handleSubmit}>Login account</button>
                                         <p className="account text-center">Don't have an account? Go to <Link to="/register" className="register">Register</Link> </p>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

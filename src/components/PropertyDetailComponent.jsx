@@ -1,165 +1,206 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getRentalById, getRentalRegionCount, getRentalsWidget } from "../api/RentalApiService";
+
+import villaImage from '../assets/images/property1.jpg';
+import apartmentImage from '../assets/images/property2.jpg';
+import houseImage from '../assets/images/property3.jpg';
+import condoImage from '../assets/images/property4.jpg';
+import townhouseImage from '../assets/images/property5.jpg';
+
 export default function PropertyDetailComponent() {
+
+    const navigate = useNavigate();
+
+    const { id } = useParams();
+    const [rentalType, setRentalType] = useState("Apartment");
+    const [rentalMonthlyRent, setRentalMonthlyRent] = useState(null);
+    const [rentalAddress, setRentalAddress] = useState(null);
+    const [rentalDescription, setRentalDescription] = useState(null);
+    const [rentalSquareFeet, setRentalSquareFeet] = useState(null);
+    const [rentalBedrooms, setRentalBedrooms] = useState(null);
+    const [rentalBaths, setRentalBaths] = useState(null);
+    const [rentalMaterial, setMaterial] = useState(null);
+    const [rentalStructure, setStructure] = useState(null);
+    const [rentalGarage, setGarage] = useState(null);
+    const [rentalBuiltYear, setBuiltYear] = useState(null);
+    const [rentalAvailableFrom, setAvailableFrom] = useState(null);
+
+    const [regionCount, setRegionCount] = useState([]);
+
+    const [ widgetFeatured, setWidgetFeatured ] = useState([]);
+
+    useEffect(() => {
+        getRentalById(id)
+            .then(response => {
+                if (response.data) {
+                    setRentalType(response.data.propertyType);
+                    setRentalMonthlyRent(response.data.rentalDetail.monthlyRent);
+                    setRentalAddress(response.data.rentalDetail.address);
+                    setRentalDescription(response.data.rentalDetail.description);
+                    setRentalSquareFeet(response.data.rentalDetail.squareFeet);
+                    setRentalBedrooms(response.data.rentalDetail.numberOfBedrooms);
+                    setRentalBaths(response.data.rentalDetail.numberOfBaths);
+                    setMaterial(response.data.rentalDetail.exteriorMaterial);
+                    setStructure(response.data.rentalDetail.structureType);
+                    setGarage(response.data.rentalDetail.garageSize);
+                    setBuiltYear(response.data.rentalDetail.builtYear);
+                    setAvailableFrom(response.data.rentalDetail.availableFrom);
+                } else {
+                    navigate("/pageNotFound");
+                }
+            })
+            .catch(error => {
+                navigate("/pageNotFound");
+            });
+        getRentalRegionCount()
+            .then(response => {
+                setRegionCount(response.data);
+            })
+            .catch(error => console.log(error));
+        getRentalsWidget()
+            .then(response => {
+                setWidgetFeatured(response.data);
+            })
+            .catch(error => console.log(error));
+    }, [id]);
+
+    function getPropertyImage(type) {
+        switch(type) {
+            case "Apartment":
+                return apartmentImage;
+            case "Condo":
+                return condoImage;
+            case "House":
+                return houseImage;
+            case "Townhouse":
+                return townhouseImage;
+            case "Villa":
+                return villaImage;
+        }
+    }
+
+    function areaStringTransform(string) {
+        const words = string.split("_");
+        for (let i = 0; i < words.length; i++) {
+            words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+        }
+        return words.join(" ");
+    }
+
     return (
         <>
-            <section class="w3l-blog-single">
-                <div class="single blog">
-                    <div class="wrapper">
-                        <div class="d-grid grid-colunm-2">
-                            <div class="single-left">
-                                <div class="single-left1">
-                                    <h5 class="card-title no-margin">	Apartments in Rentals - <span class="price">from $ 750</span></h5>
-                                    <p class="address"><span class="fa fa-map-marker"></span> #32841 block, #221DRS Real estate business building, UK.</p>
-                                    <img src="assets/images/blog-5.jpg" alt=" " class="img-responsive" />
-                                    <h5 class="card-title">Description </h5>
-                                    <p class="">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore 
-                                        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
-                                        ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu f ugiat
-                                        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim 
-                                        id est laborum.</p>
-                                    <p class="">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore 
-                                        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
-                                        ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu f ugiat
-                                        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim 
-                                        id est laborum.</p>
+            <section className="w3l-blog-single">
+                <div className="single blog">
+                    <div className="wrapper">
+                        <div className="d-grid grid-colunm-2">
+                            <div className="single-left">
+                                <div className="single-left1">
+                                    <h5 className="card-title no-margin">{rentalType}s for rent - <span className="price">from ${rentalMonthlyRent}</span></h5>
+                                    <p className="address"><span className="fa fa-map-marker"></span> {rentalAddress}</p>
+                                    <img src={getPropertyImage(rentalType)} alt=" " className="img-responsive" />
+                                    <h5 className="card-title">Description</h5>
+                                    <div className="" dangerouslySetInnerHTML={{__html: rentalDescription}} />
                                 </div>
-                                <div class="social-share">
-                                    <h3 class="aside-title">Share this property </h3>
-                                    <div class="social-icons-section">
-                                        <a class="facebook" href="#team">
-                                            <span class="fa fa-facebook"></span>
+                                <div className="social-share">
+                                    <h3 className="aside-title">Share this property</h3>
+                                    <div className="social-icons-section">
+                                        <a className="facebook" href="#team">
+                                            <span className="fa fa-facebook"></span>
                                         </a>
-                                        <a class="twitter" href="#team">
-                                            <span class="fa fa-twitter"></span>
+                                        <a className="twitter" href="#team">
+                                            <span className="fa fa-twitter"></span>
                                         </a>
-                                        <a class="instagram" href="#team">
-                                            <span class="fa fa-instagram"></span>
+                                        <a className="instagram" href="#team">
+                                            <span className="fa fa-instagram"></span>
                                         </a>
-                                        <a class="pinterest" href="#team">
-                                            <span class="fa fa-pinterest"></span>
+                                        <a className="pinterest" href="#team">
+                                            <span className="fa fa-pinterest"></span>
                                         </a>
                                     </div>
                                 </div>
 
-                                <div class="single-left1">
-                                    <h5 class="card-title">Details </h5>
-                                    <ul class="details-list">
-                                        <li><strong>Property id :</strong> PRPT12345 </li>
-                                        <li><strong>Property size :</strong> 1200 sqft </li>
-                                        <li><strong>Bedrooms :</strong> 5 </li>
-                                        <li><strong>Bathrooms :</strong> 2 </li>
-                                        <li><strong>Exterior material :</strong> Brick </li>
-                                        <li><strong>Structure type :</strong> Wood </li>
-                                        <li><strong>Garage size :</strong> 15 cars </li>
-                                        <li><strong>Rental Price :</strong> $ 750 monthly</li>
-                                        <li><strong>Built Year :</strong> 2018 </li>
-                                        <li><strong>Avaiable from :</strong> Aug 2019 </li>
+                                <div className="single-left1">
+                                    <h5 className="card-title">Details</h5>
+                                    <ul className="details-list">
+                                        <li><strong>Property id :</strong> PRPT{("0000" + id).slice(-5)} </li>
+                                        <li><strong>Property size :</strong> {rentalSquareFeet} sqft </li>
+                                        <li><strong>Bedrooms :</strong> {rentalBedrooms} </li>
+                                        <li><strong>Bathrooms :</strong> {rentalBaths} </li>
+                                        <li><strong>Exterior material :</strong> {rentalMaterial} </li>
+                                        <li><strong>Structure type :</strong> {rentalStructure} </li>
+                                        <li><strong>Garage size :</strong> {rentalGarage} cars </li>
+                                        <li><strong>Rental Price :</strong> ${rentalMonthlyRent} / month</li>
+                                        <li><strong>Built Year :</strong> {rentalBuiltYear} </li>
+                                        <li><strong>Avaiable from :</strong> {rentalAvailableFrom} </li>
                                     </ul>
                                 </div>
-                                <div class="single-left1">
-                                    <h5 class="card-title">Map </h5>
+                                <div className="single-left1">
+                                    <h5 className="card-title">Map </h5>
                                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4686815.853469242!2d-7.185058593750004!3d54.99967515853579!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x25a3b1142c791a9%3A0xc4f8a0433288257a!2sUnited%20Kingdom!5e0!3m2!1sen!2sin!4v1568270144870!5m2!1sen!2sin"></iframe>
                                 </div>
                             </div>
 
-                            <div class="right-side-bar">
-                                <aside class="posts p-4 border">
-                                    <h3 class="aside-title">Featured properties</h3>
-                                    <div class="posts-grid">
-                                        <div class="posts-grid-left pr-0">
-                                            <a href="single.html">
-                                                <img src="assets/images/blog-2.jpg" alt=" " class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="posts-grid-right">
-                                            <h4>
-                                                <a href="single.html" class="text-bl">Luxury house in london</a>
-                                            </h4>
-                                            <span class="price"> from $245 </span>
-                                        </div>
-                                    </div>
-                                    <div class="posts-grid mt-4">
-                                        <div class="posts-grid-left">
-                                            <a href="single.html">
-                                                <img src="assets/images/blog-3.jpg" alt=" " class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="posts-grid-right">
-                                            <h4>
-                                                <a href="single.html" class="text-bl">Apartment for sales</a>
-                                            </h4>
-                                            <span class="price"> from $245 </span>
-                                        </div>
-                                    </div>
-                                    <div class="posts-grid mt-4">
-                                        <div class="posts-grid-left">
-                                            <a href="single.html">
-                                                <img src="assets/images/blog-4.jpg" alt=" " class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="posts-grid-right">
-                                            <h4>
-                                                <a href="single.html" class="text-bl">House for sale</a>
-                                            </h4>
-                                            <span class="price"> from $245 </span>
-                                        </div>
-                                    </div>
+                            <div className="right-side-bar">
+                                <aside className="posts p-4 border">
+                                    <h3 className="aside-title">Featured properties</h3>
+                                    {
+                                        widgetFeatured.map(
+                                            (rental, i) => (
+                                                <div className="posts-grid" key={rental.rentalId}>
+                                                    <div className="posts-grid-left">
+                                                        <Link to={"/properties/" + rental.rentalId}>
+                                                            <img src={getPropertyImage(rental.propertyType)} alt=" " className="img-responsive img-thumbnail" />
+                                                        </Link>
+                                                    </div>
+                                                    <div className="posts-grid-right">
+                                                        <h4>
+                                                            <Link to={"/properties/" + rental.rentalId} className="text-bl">${rental.propertyType} for rent</Link>
+                                                        </h4>
+                                                        <span className="price"> from ${rental.rentalDetail.monthlyRent} </span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )
+                                        
+                                    }
                                 </aside>
 
-                                <aside class="">
-                                    <h3 class="aside-title mb-3">Our listings</h3>
-                                    <ul class="listings-list">
-                                        <li><a href="#apartments">Apartments</a> (20) </li>
-                                        <li><a href="#apartments">Houses</a> (8) </li>
-                                        <li><a href="#apartments">Retails</a> (15) </li>
-                                        <li><a href="#apartments">Villas</a> (7) </li>
-                                        <li><a href="#apartments">Industrial</a> (4) </li>
-                                        <li><a href="#apartments">Offices</a> (21) </li>
-                                        <li><a href="#apartments">Property land</a> (17) </li>
+                                <aside className="">
+                                    <h3 className="aside-title mb-3">Our listings by region</h3>
+                                    <ul className="listings-list">
+                                        {
+                                            regionCount.map(
+                                                (row, i) => (
+                                                    <li><Link to={"/properties/location/" + row.place}>{areaStringTransform(row.place)}</Link> ({row.count})</li>
+                                                )
+                                            )
+                                        }
                                     </ul>
                                 </aside>
 
-                                <aside class="posts p-4 border">
-                                    <h3 class="aside-title">Nearby properties</h3>
-                                    <div class="posts-grid">
-                                        <div class="posts-grid-left pr-0">
-                                            <a href="single.html">
-                                                <img src="assets/images/blog-2.jpg" alt=" " class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="posts-grid-right">
-                                            <h4>
-                                                <a href="single.html" class="text-bl">Luxury house in london</a>
-                                            </h4>
-                                            <span class="price"> from $245 </span>
-                                        </div>
-                                    </div>
-                                    <div class="posts-grid mt-4">
-                                        <div class="posts-grid-left">
-                                            <a href="single.html">
-                                                <img src="assets/images/blog-3.jpg" alt=" " class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="posts-grid-right">
-                                            <h4>
-                                                <a href="single.html" class="text-bl">Apartment for sales</a>
-                                            </h4>
-                                            <span class="price"> from $245 </span>
-                                        </div>
-                                    </div>
-                                    <div class="posts-grid mt-4">
-                                        <div class="posts-grid-left">
-                                            <a href="single.html">
-                                                <img src="assets/images/blog-4.jpg" alt=" " class="img-responsive img-thumbnail" />
-                                            </a>
-                                        </div>
-                                        <div class="posts-grid-right">
-                                            <h4>
-                                                <a href="single.html" class="text-bl">House for sale</a>
-                                            </h4>
-                                            <span class="price"> from $245 </span>
-                                        </div>
-                                    </div>
-                                </aside>
+                                {/* <aside className="posts p-4 border">
+                                    <h3 className="aside-title">Nearby properties</h3>
+                                    {
+                                        widgetByLocation.map(
+                                            (rental, i) => (
+                                                <div className="posts-grid" key={rental.rentalId}>
+                                                    <div className="posts-grid-left">
+                                                        <Link to={"/properties/" + rental.rentalId}>
+                                                            <img src="assets/images/blog-2.jpg" alt=" " className="img-responsive img-thumbnail" />
+                                                        </Link>
+                                                    </div>
+                                                    <div className="posts-grid-right">
+                                                        <h4>
+                                                            <Link to={"/properties/" + rental.rentalId} className="text-bl">Luxury house in london</Link>
+                                                        </h4>
+                                                        <span className="price"> from ${rental.rentalDetail.monthlyRent} </span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )
+                                    }
+                                </aside> */}
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getRentalsFooter, getRentalCountFooter } from '../api/RentalApiService';
+import { getRentalsWidget, getRentalTypeCount } from '../api/RentalApiService';
 
 import rentalImage1 from '../assets/images/blog1.jpg';
 import rentalImage2 from '../assets/images/blog2.jpg';
@@ -24,7 +24,7 @@ function FooterComponent() {
     }
 
     useEffect(() => {
-        getRentalCountFooter()
+        getRentalTypeCount()
             .then(response => {
                 response.data.map(value => {
                     switch(value.propertyType) {
@@ -47,7 +47,7 @@ function FooterComponent() {
                 });
             })
             .catch(error => console.log(error));
-        getRentalsFooter()
+        getRentalsWidget()
             .then(response => {
                 setPopularRentals(response.data);
             })
@@ -105,8 +105,8 @@ function FooterComponent() {
                                     <h6 className="footer-title-29">Quick Links</h6>
                                     <li><Link to="/about">About company</Link></li>
                                     <li><Link to="/properties?featured=true">Featured properties</Link></li>
-                                    <li><a href="team.html">Professional Agents</a></li>
-                                    <li><a href="blog.html">Properties Blog</a></li>
+                                    <li><a href="#link">Professional Agents</a></li>
+                                    <li><a href="#link">Properties Blog</a></li>
                                     <li><Link to="/contact">Get in touch</Link></li>
                                 </ul>
                             </div>

@@ -9,8 +9,11 @@ import MoveTopComponent from './components/MoveTopComponent';
 import LoginComponent from './components/LoginComponent';
 import RegisterComponent from './components/RegisterComponent';
 import ErrorComponent from './components/ErrorComponent';
+import AboutComponent from './components/AboutComponent';
+import ServicesComponent from './components/ServicesComponent';
 import ContactComponent from './components/ContactComponenet';
-import PropertyListingComponent from './components/PropertyListingComponent';
+import PropertyByTypeComponent from './components/PropertyByTypeComponent';
+import PropertyByLocationComponent from './components/PropertyByLocationComponent';
 import PropertyDetailComponent from './components/PropertyDetailComponent';
 import { useAuth } from './security/AuthContext';
 
@@ -36,8 +39,11 @@ function App() {
 					<Route path="/pricing" element={<AuthenticatedRoute><PricingComponent /></AuthenticatedRoute>}></Route>
 					<Route path="/login" element={<LoginComponent />}></Route>
 					<Route path="/register" element={<RegisterComponent />}></Route>
+					<Route path="/about" element={<AboutComponent />}></Route>
+					<Route path="/services" element={<ServicesComponent />}></Route>
 					<Route path="/contact" element={<ContactComponent />}></Route>
-					<Route path="/properties" element={<PropertyListingComponent />}></Route>
+					<Route path="/properties" element={<PropertyByTypeComponent />}></Route>
+					<Route path="/properties/location/:location" element={<PropertyByLocationComponent />}></Route>
 					<Route path="/properties/:id" element={<PropertyDetailComponent />}></Route>
 					<Route path="/*" element={<ErrorComponent />}></Route>
 				</Routes>

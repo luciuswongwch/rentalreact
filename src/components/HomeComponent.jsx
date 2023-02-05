@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import useScript from '../hooks/useScript';
 import { Link } from 'react-router-dom';
-import { getRentalsByType, getRentalsHomePage } from '../api/RentalApiService';
-import { getAreasHomePage } from '../api/AreaApiService';
+import { getRentalsByType, getRentalsCarousel } from '../api/RentalApiService';
+import { getRegionsHomePage } from '../api/LocationApiService';
 
 import propertyImage1 from '../assets/images/property1.jpg';
 import propertyImage2 from '../assets/images/property2.jpg';
@@ -43,6 +43,14 @@ export default function HomeComponent() {
         return list[Math.floor(Math.random() * 5)];
     }
 
+    function areaStringTransform(string) {
+        const words = string.split("_");
+        for (let i = 0; i < words.length; i++) {
+            words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+        }
+        return words.join(" ");
+    }
+
     const [rentals, setRentals] = useState([]);
     const [areaSection1, setAreaSection1] = useState([]);
     const [areaSection2, setAreaSection2] = useState([]);
@@ -64,42 +72,30 @@ export default function HomeComponent() {
     const [villas, setVillas] = useState([]);
         
     useEffect(() => {
-        getRentalsHomePage()
-            .then(response => {
-                setRentals(response.data);
-            })
+        getRentalsCarousel()
+            .then(response => { setRentals(response.data); })
             .catch(error => console.log(error));
-        getAreasHomePage()
+        getRegionsHomePage()
             .then(response => {
                 setAreaSection1([[arr[0], response.data[0]], [arr[1], response.data[1]]]);
                 setAreaSection2([[arr[2], response.data[2]], [arr[3], response.data[3]], [arr[4], response.data[4]]]);
             })
             .catch(error => console.log(error));
         getRentalsByType("Apartment")
-            .then(response => {
-                setApartments(response.data);
-            })
+            .then(response => { setApartments(response.data); })
             .catch(error => console.log(error));
         getRentalsByType("Condo")
-        .then(response => {
-            setCondos(response.data);
-        })
-        .catch(error => console.log(error));
+            .then(response => { setCondos(response.data); })
+            .catch(error => console.log(error));
         getRentalsByType("House")
-        .then(response => {
-            setHouses(response.data);
-        })
-        .catch(error => console.log(error));
+            .then(response => { setHouses(response.data); })
+            .catch(error => console.log(error));
         getRentalsByType("Townhouse")
-        .then(response => {
-            setTownhouses(response.data);
-        })
-        .catch(error => console.log(error));
+            .then(response => { setTownhouses(response.data); })
+            .catch(error => console.log(error));
         getRentalsByType("Villa")
-        .then(response => {
-            setVillas(response.data);
-        })
-        .catch(error => console.log(error));
+            .then(response => { setVillas(response.data); })
+            .catch(error => console.log(error));
     }, []);
 
 
@@ -237,14 +233,14 @@ export default function HomeComponent() {
                         <div className="owl-carousel owl-theme">
                             {
                                 rentals.map(
-                                    rental => (
+                                    (rental, i) => (
                                         <div className="item" key={rental.rentalId}>
                                             <div className="grids4-info">
-                                                <Link to={"/properties/detail?id=" + rental.rentalId}><img src={getRandomPropertyImage()} alt="" /></Link>
+                                                <Link to={"/properties/" + rental.rentalId}><img src={getRandomPropertyImage()} alt="" /></Link>
                                                 <div className="info-bg">
-                                                    <h5><Link to={"/properties/detail/?id=" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
+                                                    <h5><Link to={"/properties/" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
                                                     <span className="price">$ {rental.rentalDetail.monthlyRent} / month</span>
-                                                    <p>{rental.rentalDetail.description.substring(0,100) + "..."}</p>
+                                                    <p>{rental.rentalDetail.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0,100) + "..."}</p>
                                                     <ul>
                                                         <li><span className="fa fa-bed"></span> {rental.rentalDetail.numberOfBedrooms}</li>
                                                         <li><span className="fa fa-bath"></span> {rental.rentalDetail.numberOfBaths}</li>
@@ -272,7 +268,7 @@ export default function HomeComponent() {
                                         return (
                                             <div className={"left-grid-ele-9 grid-bg" + (data[0])} key={data[1].areaId}>
                                                 <div className="sub-wid-grid-9">
-                                                    <h4 className="text-grid-9"><Link to={"/properties?location=" + data[1].place.replace(/\s+/g, '')}>{data[1].place}</Link></h4>
+                                                    <h4 className="text-grid-9"><Link to={"/properties/location/" + data[1].place}>{areaStringTransform(data[1].place)}</Link></h4>
                                                     <p className="sub-para">{data[1].description}</p>
                                                     <span>{data[1].rentals.length} properties</span>
                                                 </div>
@@ -289,7 +285,7 @@ export default function HomeComponent() {
                                         return (
                                             <div className={"left-grid-ele-9 grid-bg" + (data[0])} key={data[1].areaId}>
                                                 <div className="sub-wid-grid-9">
-                                                    <h4 className="text-grid-9"><Link to={"/properties?location=" + data[1].place.replace(/\s+/g, '')}>{data[1].place}</Link></h4>
+                                                    <h4 className="text-grid-9"><Link to={"/properties/location/" + data[1].place}>{areaStringTransform(data[1].place)}</Link></h4>
                                                     <p className="sub-para">{data[1].description}</p>
                                                     <span>{data[1].rentals.length} properties</span>
                                                 </div>
@@ -331,11 +327,11 @@ export default function HomeComponent() {
                                     apartments.map(
                                         rental => (
                                             <div className="product" key={rental.rentalId}>
-                                                <Link to={"/properties/detail?id=" + rental.rentalId}><img src={propertyImage2} className="img-responsive" alt="" /></Link>
+                                                <Link to={"/properties/" + rental.rentalId}><img src={propertyImage2} className="img-responsive" alt="" /></Link>
                                                 <div className="info-bg">
-                                                    <h5><Link to={"/properties/detail/?id=" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
+                                                    <h5><Link to={"/properties/" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
                                                     <span className="price">$ {rental.rentalDetail.monthlyRent} / month</span>
-                                                    <p>{rental.rentalDetail.description.substring(0,100) + "..."}</p>
+                                                    <p>{rental.rentalDetail.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0,100) + "..."}</p>
                                                     <ul>
                                                         <li><span className="fa fa-bed"></span> {rental.rentalDetail.numberOfBedrooms}</li>
                                                         <li><span className="fa fa-bath"></span> {rental.rentalDetail.numberOfBaths}</li>
@@ -355,11 +351,11 @@ export default function HomeComponent() {
                                     condos.map(
                                         rental => (
                                             <div className="product" key={rental.rentalId}>
-                                                <Link to={"/properties/detail?id=" + rental.rentalId}><img src={propertyImage4} className="img-responsive" alt="" /></Link>
+                                                <Link to={"/properties/" + rental.rentalId}><img src={propertyImage4} className="img-responsive" alt="" /></Link>
                                                 <div className="info-bg">
-                                                    <h5><Link to={"/properties/detail/?id=" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
+                                                    <h5><Link to={"/properties/" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
                                                     <span className="price">$ {rental.rentalDetail.monthlyRent} / month</span>
-                                                    <p>{rental.rentalDetail.description.substring(0,100) + "..."}</p>
+                                                    <p>{rental.rentalDetail.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0,100) + "..."}</p>
                                                     <ul>
                                                         <li><span className="fa fa-bed"></span> {rental.rentalDetail.numberOfBedrooms}</li>
                                                         <li><span className="fa fa-bath"></span> {rental.rentalDetail.numberOfBaths}</li>
@@ -379,11 +375,11 @@ export default function HomeComponent() {
                                     houses.map(
                                         rental => (
                                             <div className="product" key={rental.rentalId}>
-                                                <Link to={"/properties/detail?id=" + rental.rentalId}><img src={propertyImage3} className="img-responsive" alt="" /></Link>
+                                                <Link to={"/properties/" + rental.rentalId}><img src={propertyImage3} className="img-responsive" alt="" /></Link>
                                                 <div className="info-bg">
-                                                    <h5><Link to={"/properties/detail/?id=" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
+                                                    <h5><Link to={"/properties/" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
                                                     <span className="price">$ {rental.rentalDetail.monthlyRent} / month</span>
-                                                    <p>{rental.rentalDetail.description.substring(0,100) + "..."}</p>
+                                                    <p>{rental.rentalDetail.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0,100) + "..."}</p>
                                                     <ul>
                                                         <li><span className="fa fa-bed"></span> {rental.rentalDetail.numberOfBedrooms}</li>
                                                         <li><span className="fa fa-bath"></span> {rental.rentalDetail.numberOfBaths}</li>
@@ -403,11 +399,11 @@ export default function HomeComponent() {
                                     townhouses.map(
                                         rental => (
                                             <div className="product" key={rental.rentalId}>
-                                                <Link to={"/properties/detail?id=" + rental.rentalId}><img src={propertyImage5} className="img-responsive" alt="" /></Link>
+                                                <Link to={"/properties/" + rental.rentalId}><img src={propertyImage5} className="img-responsive" alt="" /></Link>
                                                 <div className="info-bg">
-                                                    <h5><Link to={"/properties/detail/?id=" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
+                                                    <h5><Link to={"/properties/" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
                                                     <span className="price">$ {rental.rentalDetail.monthlyRent} / month</span>
-                                                    <p>{rental.rentalDetail.description.substring(0,100) + "..."}</p>
+                                                    <p>{rental.rentalDetail.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0,100) + "..."}</p>
                                                     <ul>
                                                         <li><span className="fa fa-bed"></span> {rental.rentalDetail.numberOfBedrooms}</li>
                                                         <li><span className="fa fa-bath"></span> {rental.rentalDetail.numberOfBaths}</li>
@@ -427,11 +423,11 @@ export default function HomeComponent() {
                                     villas.map(
                                         rental => (
                                             <div className="product" key={rental.rentalId}>
-                                                <Link to={"/properties/detail?id=" + rental.rentalId}><img src={propertyImage1} className="img-responsive" alt="" /></Link>
+                                                <Link to={"/properties/" + rental.rentalId}><img src={propertyImage1} className="img-responsive" alt="" /></Link>
                                                 <div className="info-bg">
-                                                    <h5><Link to={"/properties/detail/?id=" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
+                                                    <h5><Link to={"/properties/" + rental.rentalId}>{rental.propertyType == "Villa" ? "Luxury Villa" : rental.propertyType} for rent</Link></h5>
                                                     <span className="price">$ {rental.rentalDetail.monthlyRent} / month</span>
-                                                    <p>{rental.rentalDetail.description.substring(0,100) + "..."}</p>
+                                                    <p>{rental.rentalDetail.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0,100) + "..."}</p>
                                                     <ul>
                                                         <li><span className="fa fa-bed"></span> {rental.rentalDetail.numberOfBedrooms}</li>
                                                         <li><span className="fa fa-bath"></span> {rental.rentalDetail.numberOfBaths}</li>
