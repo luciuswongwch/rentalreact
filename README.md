@@ -1,3 +1,7 @@
+##Deployment
+
+[http://rentingreact-luciuswong.s3-website.ca-central-1.amazonaws.com/](http://rentingreact-luciuswong.s3-website.ca-central-1.amazonaws.com/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
